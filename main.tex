@@ -1,0 +1,85 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb,amsthm,amsmath,fullpage}
+
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}[definition]{Proposition}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\grad}{\nabla}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+
+\title{Smooth Optimization}
+
+\author{D\'avid P\'al}
+
+\begin{document}
+
+\maketitle
+
+We denote by $\norm{\cdot}$ the Euclidean norm on $\R^d$. That is, for a vector $x = (x_1, x_2, \dots, x_d) \in \R^d$,
+we define $\norm{x} = \sqrt{\sum_{i=1}^d x_i^2}$.
+
+\begin{definition}
+Let $\eta > 0$. A differentiable function $f:\R^d \to \R$ is called \emph{$\eta$-smooth} if
+\begin{equation}
+\label{equation:smoothness-definition}
+\forall x,y \in \R^d \qquad \norm{\grad f(x) - \grad f(x)} \le \eta \norm{x - y} \; .
+\end{equation}
+\end{definition}
+
+\begin{proposition}
+A differentiable function $f:\R^d \to \R$ is $\eta$-smooth if and only if
+\begin{equation}
+\label{equation:smoothness-proposition}
+\forall x,y \in \R^d \qquad \left| f(x) - f(y) - \langle \grad f(y), x - y \rangle \right| \le \frac{\eta}{2} \norm{x - y}^2 \; .
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The idea is to reduce the problem to a one-dimensional one. Fix $x,y \in \R^d$
+and define a scalar function $g:\R \to \R$ as $g(t) = f(y + t (x - y))$. Note
+that $g(0) = f(y)$, $g(1) = f(x)$ and $g'(t) = \langle \grad f(y + t(x - y)), x -
+y \rangle$.
+
+We first prove that \eqref{equation:smoothness-definition} implies \eqref{equation:smoothness-proposition}.
+It easy to see that $g$ is $(\eta \norm{x-y}^2)$-smooth. Indeed, by Cauchy-Schwartz inequality and $\eta$-smoothness of $f$, we get
+\begin{align*}
+|g'(s) - g'(t)|
+& = \left| \langle \grad f(y + s(x - y)) - \grad f(y + t(x - y)), x - y \rangle \right| \\
+& \le \norm{\grad f(y + s(x - y)) - \grad f(y + t(x - y))} \cdot \norm{x - y} \\
+& \le L \norm{(y + s(x - y)) - (y + t(x - y))} \cdot \norm{x - y} \\
+& = L \norm{x - y}^2 |s -  t| \; .
+\end{align*}
+By smoothness of $g$, for any $t \ge 0$,
+$$
+- \eta \norm{x-y}^2 t \le g'(t) - g'(0) \le \eta \norm{x-y}^2 t
+$$
+If we integrate both sides:
+$$
+- \int_0^1 \eta \norm{x-y}^2 t \, dt \le \int_0^1 \left[g'(t) - g'(0)\right] dt \le \int_0^1 \eta \norm{x-y}^2 t \, dt \; ,
+$$
+we get
+$$
+- \frac{\eta}{2} \norm{x-y}^2 \le g(1) - g(0) - g'(0) \le \frac{\eta}{2} \norm{x-y}^2 \; .
+$$
+More compactly,
+$$
+\left|g(1) - g(0) - g'(0)\right| \le \frac{\eta}{2} \norm{x-y}^2 \; .
+$$
+This inequality is identical to \eqref{equation:smoothness-proposition}.
+
+To prove that \eqref{equation:smoothness-proposition} implies \eqref{equation:smoothness-definition},
+consider any $z \in R^d$ of the form $z = y + t(x-y)$ for $t \in \R$. Then, \eqref{equation:smoothness-proposition} implies that
+$$
+f(z) - f(y) - \langle \grad f(y), z - y \rangle \le \frac{\eta}{2} \norm{z - y}^2
+$$
+This is equivalent to
+$$
+g(t) - g(0) - t g'(0) \le \frac{\eta}{2} \norm{x - y}^2 t^2 \; .
+$$
+Now, for $t = 0$, both sides of the inequality are zero. Therefore,
+\end{proof}
+
+
+\end{document}
