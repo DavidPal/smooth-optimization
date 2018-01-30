@@ -4,6 +4,7 @@
 
 \newtheorem{definition}{Definition}
 \newtheorem{proposition}[definition]{Proposition}
+\newtheorem{corollary}[definition]{Corollary}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\grad}{\nabla}
@@ -18,9 +19,13 @@
 \maketitle
 
 We denote by $\norm{\cdot}$ the Euclidean norm on $\R^d$. That is, for a vector $x = (x_1, x_2, \dots, x_d) \in \R^d$,
-we define $\norm{x} = \sqrt{\sum_{i=1}^d x_i^2}$.
+we define $\norm{x} = \sqrt{\sum_{i=1}^d x_i^2}$. We overload the notation and for a matrix $M$
+we denote by $\norm{M}$ the spectral norm of $M$. That is,
+$$
+\norm{M} = \sup_{\substack{x \in \R^d \\ x \neq 0}} \frac{\norm{Mx}}{\norm{x}} \; .
+$$
 
-\begin{definition}
+\begin{definition}[Smoothness]
 Let $\eta > 0$. A differentiable function $f:\R^d \to \R$ is called \emph{$\eta$-smooth} if
 \begin{equation}
 \label{equation:smoothness-definition}
@@ -29,20 +34,19 @@ Let $\eta > 0$. A differentiable function $f:\R^d \to \R$ is called \emph{$\eta$
 \end{definition}
 
 \begin{proposition}
-A differentiable function $f:\R^d \to \R$ is $\eta$-smooth if and only if
+If $f:\R^d \to \R$ is a $\eta$-smooth function then
 \begin{equation}
-\label{equation:smoothness-proposition}
+\label{equation:smoothness-proposition-1}
 \forall x,y \in \R^d \qquad \left| f(x) - f(y) - \langle \grad f(y), x - y \rangle \right| \le \frac{\eta}{2} \norm{x - y}^2 \; .
 \end{equation}
 \end{proposition}
 
 \begin{proof}
-The idea is to reduce the problem to a one-dimensional one. Fix $x,y \in \R^d$
+We reduce the problem to a one-dimensional one. Fix $x,y \in \R^d$
 and define a scalar function $g:\R \to \R$ as $g(t) = f(y + t (x - y))$. Note
 that $g(0) = f(y)$, $g(1) = f(x)$ and $g'(t) = \langle \grad f(y + t(x - y)), x -
 y \rangle$.
 
-We first prove that \eqref{equation:smoothness-definition} implies \eqref{equation:smoothness-proposition}.
 It easy to see that $g$ is $(\eta \norm{x-y}^2)$-smooth. Indeed, by Cauchy-Schwartz inequality and $\eta$-smoothness of $f$, we get
 \begin{align*}
 |g'(s) - g'(t)|
@@ -67,19 +71,98 @@ More compactly,
 $$
 \left|g(1) - g(0) - g'(0)\right| \le \frac{\eta}{2} \norm{x-y}^2 \; .
 $$
-This inequality is identical to \eqref{equation:smoothness-proposition}.
-
-To prove that \eqref{equation:smoothness-proposition} implies \eqref{equation:smoothness-definition},
-consider any $z \in R^d$ of the form $z = y + t(x-y)$ for $t \in \R$. Then, \eqref{equation:smoothness-proposition} implies that
-$$
-f(z) - f(y) - \langle \grad f(y), z - y \rangle \le \frac{\eta}{2} \norm{z - y}^2
-$$
-This is equivalent to
-$$
-g(t) - g(0) - t g'(0) \le \frac{\eta}{2} \norm{x - y}^2 t^2 \; .
-$$
-Now, for $t = 0$, both sides of the inequality are zero. Therefore,
+This inequality is identical to \eqref{equation:smoothness-proposition-1}.
 \end{proof}
 
+\begin{proposition}
+If $f:\R^d \to \R$ is a twice continuously differentiable\footnote{A function is twice continuously differentiable if the second derivate exists (at every point) and it is continuous.}
+function and
+\begin{equation}
+\label{equation:smoothness-proposition-2}
+\forall x,y \in \R^d \qquad \left| f(x) - f(y) - \langle \grad f(y), x - y \rangle \right| \le \frac{\eta}{2} \norm{x - y}^2 \; .
+\end{equation}
+then
+\begin{equation}
+\label{equation:smoothness-proposition-3}
+\forall x \in \R^d \qquad \norm{\grad^2 f(x)} \le \eta \; .
+\end{equation}
+and hence $f$ is $\eta$-smooth.
+\end{proposition}
+
+\begin{proof}
+We reduce the problem to a one-dimensional one. Fix $x,y \in \R^d$ and define a
+scalar function $g:\R \to \R$ as $g(t) = f(y + t (x - y))$. Note that $g(0) =
+f(y)$, $g(1) = f(x)$, $g'(t) = \langle \grad f(y + t(x - y)), x - y \rangle$
+and $g''(t) = (x-y)^T \grad^2 f(y + t(x - y)) (x - y)$.
+
+We claim that $g$ satisfies analogue of \eqref{equation:smoothness-proposition-2}.
+Namely, we claim that
+\begin{equation}
+\label{equation:smoothness-proposition-for-g}
+\forall s,t \in \R \qquad \left| g(s) - g(t) - g'(t) (s - t) \right| \le \frac{\eta}{2} \norm{x - y}^2 (s - t)^2 \; .
+\end{equation}
+This is easily verified by direct calculation. Indeed,
+\begin{align*}
+& \left| g(s) - g(t) - g'(t) (s - t) \right| \\
+& = \left| f \left( \underbrace{y + s (x - y)}_{=u} \right) - f \left( \underbrace{y + t (x - y)}_{=v} \right) - \left\langle \grad f \left( \underbrace{y + t(x - y)}_{=v} \right), x - y \right\rangle (s - t) \right| \\
+& = \left| f(u) - f(v) - \langle \grad f(v), u - v \rangle \right| \\
+& \le \frac{\eta}{2} \norm{u - v}^2  \\
+& \le \frac{\eta}{2} \norm{x - y}^2 (s - t)^2  \; .
+\end{align*}
+
+According to Taylor's theorem, for any $s,t \in \R$, there exists $z$ between $s$ and $t$
+such that
+\begin{equation}
+\label{equation:taylor-theorem}
+g(s) = g(t) + g'(t) (s - t) + \frac{1}{2} g''(z) (s - t)^2 \; .
+\end{equation}
+Combining \eqref{equation:taylor-theorem} and \eqref{equation:smoothness-proposition-for-g},
+$$
+|g''(z)| = 2 \frac{\left|g(s) - g(t) - g'(t) (s - t)\right|}{(s - t)^2} \le \eta \norm{x - y}^2
+$$
+Taking limit $s \to t$, using continuity of $g''(z)$, the facts that $z$ lies between $s$ and $t$,
+and that $t$ was arbitrary, we obtain
+$$
+\forall t \in \R \qquad |g''(t)| \le \eta \norm{x - y}^2 \; .
+$$
+In particular, applying the above inequality for $t = 0$ and substituting for $g''(0)$, we have
+$$
+|(x-y)^T \grad^2 f(y) (x - y)| \le \eta \norm{x - y}^2 \; .
+$$
+Since $x,y \in \R^d$ are arbitrary, we have
+$$
+\forall v,x \in \R^d \qquad |v^T \grad^2 f(x) v| \le \eta \norm{v}^2 \; .
+$$
+The matrix $\grad^2 f(x)$ is symmetric and thus its spectral norm
+is the largest eigenvalue in absolute value. For any eigenvector $v$,
+$\|v^T \grad^2 f(x) v\| = \|\lambda\| \norm{v}^2$ where $\lambda$ is the corresponding eigenvalue.
+It follows that absolute value of all eigenvalues are bounded by $\eta$.
+This proves \eqref{equation:smoothness-proposition-3}.
+
+To prove that $f$ is $\eta$-smooth, we apply Taylor's theorem to
+the function $\grad f$. For any $x,y \in \R$ there exists $z \in \R$
+on the line segment between $x$ and $y$ such that
+$$
+\grad f(x) = \grad f(y) + \grad^2 f(z) (x - y) \; .
+$$
+Threfore, applying \eqref{equation:smoothness-proposition-3} we have
+$$
+\norm{\grad f(x) - \grad f(y)} = \norm{\grad^2 f(z) (x - y)} \le \norm{\grad^2 f(z)} \norm{x - y} \le \eta \norm{x - y} \; .
+$$
+and we see that $f$ is $\eta$-smooth.
+\end{proof}
+
+We summarize the two propositions.
+
+\begin{corollary}
+Let $f:\R^d \to \R$ be a twice continuously differentiable function. The following statements
+are equivalent,
+\begin{align*}
+\forall x,y \in \R^d \qquad & \norm{\grad f(x) - \grad f(x)} \le \eta \norm{x - y} \; , \\
+\forall x \in \R^d \qquad & \norm{\grad^2 f(x)} \le \eta \; , \\
+\forall x,y \in \R^d \qquad & \left| f(x) - f(y) - \langle \grad f(y), x - y \rangle \right| \le \frac{\eta}{2} \norm{x - y}^2 \; .
+\end{align*}
+
+\end{corollary}
 
 \end{document}
